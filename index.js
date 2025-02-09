@@ -68,7 +68,7 @@ app.get('/api/country/:country', (req,res) => {
     console.log(country);
     if (Object.keys(data.name).includes(country)) {
         console.log('Devolviendo datos del país con código: ' + country);
-        const countryObj = {};
+        const countryObj = {code: country};
         Object.keys(data).forEach(prop => {
             if (data[prop][country]) {
                 countryObj[prop] = data[prop][country];
@@ -81,6 +81,18 @@ app.get('/api/country/:country', (req,res) => {
         res.status(404).end();
     }
     console.log('-------------------------------------------');
+});
+
+app.delete('/api/country/:country', (req,res) => {
+    const country = req.params.country;
+    Object.keys(data).forEach(prop => {
+        if (data[prop][country]) {
+            delete data[prop][country];
+        }
+    })
+    console.log('Se elimina el país con código ' + country);
+    console.log('Aunque no esté siempre se devuelvo estado 204 sin contenido');
+    res.status(204).end();
 });
 
 app.listen(port, () => {
