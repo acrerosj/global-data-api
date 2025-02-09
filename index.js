@@ -27,36 +27,60 @@ function transformData(list) {
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/api/availableDataTypes', (req,res) => {
-    res.json(Object.keys(data.names));
+    const availableDataTypes = Object.keys(data);
+    console.log('Devolviendo los datos disponibles: ');
+    console.log(availableDataTypes);
+    console.log('-------------------------------------------');
+    res.json(availableDataTypes);
 });
 
-app.get('/api/countries', (req, res) => {
-    res.json(Object.keys(data.name));
+app.get('/api/codes', (req, res) => {
+    const codes = Object.keys(data.name);
+    console.log('Devolviendo los códigos de países: ');
+    console.log(codes);
+    console.log('-------------------------------------------');
+    res.json(codes);
 });
 
-app.get('/api/data/:cod', (req,res) => {
-    const cod = req.params.cod;
-    if (data[cod]) {
-        res.json(transformData(data[cod]));
+app.get('/api/names', (req, res) => {
+    console.log('Devolviendo los nombres de los países: ');
+    console.log(data.name);
+    console.log('-------------------------------------------');
+    res.json(data.name);
+});
+
+app.get('/api/data/:dataType', (req,res) => {
+    const dataType = req.params.dataType;
+    if (data[dataType]) {
+        console.log('Devolviendo los datos de la propiedad: ' + dataType);
+        const result = transformData(data[dataType]);
+        console.log(result);
+        res.json(result);
     } else {
+        console.log('No encontrada la propiedad: ' + dataType);
         res.status(404).end();
     }
+    console.log('-------------------------------------------');
 });
 
 app.get('/api/country/:country', (req,res) => {
     const country = req.params.country;
     console.log(country);
     if (Object.keys(data.name).includes(country)) {
+        console.log('Devolviendo datos del país con código: ' + country);
         const countryObj = {};
         Object.keys(data).forEach(prop => {
             if (data[prop][country]) {
                 countryObj[prop] = data[prop][country];
             }
         })
+        console.log(countryObj);
         res.json(countryObj);
     } else {
+        console.log('No encontrado el país con el código: ' + country);
         res.status(404).end();
     }
+    console.log('-------------------------------------------');
 });
 
 app.listen(port, () => {
